@@ -3,7 +3,7 @@
 
 int checkZero()
 {
-    if (stack.memory[stack.esp + 1] == 0)
+    if (stack.memory[stack.esp + 1] != 0)
     {
         return 1;
     }
@@ -17,7 +17,12 @@ void getCode()
 {
     char* buf;
     buf = calloc(sizeof(char), LENGTH_OF_STRING);
-    gets(buf);
+    if (fgets(buf, LENGTH_OF_STRING, input) == NULL)
+    {
+        printf("Unexpected end of the program!!!");
+        exit(0);
+    }
+    //gets(buf);
     code.memory[code.point] = buf;
     code.point++;
 }
@@ -25,85 +30,111 @@ void getCode()
 int charToInt(char* string, int pos)
 {
     int number = 0;
+    int flag = 0;
+    int positive = 1;
+    if (string[pos] == '-')
+    {
+        positive = 0;
+        pos++;
+    }
     while (string[pos] >= '0' && string[pos] <= '9')
     {
         number = number * 10 + string[pos] - '0';
         pos++;
+        flag = 1;
     }
-    return number;
+    if (flag == 0)
+    {
+        printf("Not enough arguments");
+        exit(0);
+    }
+    while ((string[pos] != '\0') && (string[pos] != '\n'))
+    {
+        if ((string[pos] != ' ') && (string[pos] != '\t') && (string[pos] != '\n'))
+        {
+            printf("Too much arguments");
+            exit(0);
+        }
+    }
+    if (positive)
+    {
+        return number;
+    }
+    else
+    {
+        return -1 * number;
+    }
 }
 
 int checkPoint(char* string)
 {
-    if (string[0] >= '0' && string[0] <= '9')
+    int i = 1;
+    if (((string[0] >= 'a') && (string[0] <= 'z')) || ((string[0] >= 'A') && (string[0] <= 'Z')))
     {
-        return 1;
+        while((string[i] != '\0') && (string[i] != ':'))
+        {
+            i++;
+        }
+        if (string[i] == ':')
+        {
+            return 1;
+        }
+        else
+        {
+            return 0;
+        }
     }
     else
     {
-        return 0;
+        printf("Wrong mark!");
+        exit(0);
     }
 }
 
-int analyzeAndDoCode(int IP)
+int takeTag(char* string)
 {
-    int i, flag = 1;
-    if (checkPoint(code.memory[IP]))
+    int j, i = 0;
+    char* buf = calloc(sizeof(char), LENGTH_OF_STRING);
+    while (string[i] != ':' && string[i] != ' ')
     {
-        code.points[charToInt(code.memory[IP], 0)] = IP;
-        i = 3;
+        buf[i] = string[i];
+        i++;
     }
-    else
+    if (string[i] == ' ')
     {
-        i = 0;
+        printf("No spaces in tags");
+        exit(0);
     }
-    switch (code.memory[IP][i])
+    buf[i] = '\0';
+    for (j = 0; j < code.tagsPointer; j++)
+        {
+            if (strcmp(buf, code.tags[j]) == 0)
+            {
+                return i + 2;
+            }
+        }
+    code.tags[code.tagsPointer] = buf;
+    code.tagsToLines[code.tagsPointer] = code.point - 1;
+    code.tagsPointer++;
+    return i + 2;
+}
+
+char* readTag(char* string, int pos)
+{
+    int i = 0;
+    char* buf = calloc(sizeof(char), LENGTH_OF_STRING);
+    while((string[pos] != '\0') && (string[pos] != ' ') && (string[pos] != '\n'))
     {
-        case 'r':
-            flag = 0;
-        break;
-        case 'l':
-            if (code.memory[IP][i + 2] == 'c')
-            {
-                ldc(charToInt(code.memory[IP], i + 4));
-            }
-            else
-            {
-                ld(charToInt(code.memory[IP], i + 3));
-            }
-        break;
-        case 's':
-            if (code.memory[IP][i + 1] == 't')
-            {
-                st(charToInt(code.memory[IP], i + 3));
-            }
-            else
-            {
-                sub();
-            }
-        break;
-        case 'a':
-            add();
-        break;
-        case 'p':
-            print();
-        break;
-        case 'c':
-            cmp();
-        break;
-        case 'j':
-            jmp(charToInt(code.memory[IP], i + 4));
-        break;
-        case 'b':
-            br(charToInt(code.memory[IP], i + 3));
-        break;
-        case ';':
-        break;
+        buf[i] = string[pos];
+        i++;
+        pos++;
     }
-    if (code.IP == IP)
+    buf[i] = '\0';
+    if (buf[0] == '\0')
     {
-        code.IP++;
+        printf("Not enough arguments");
+        exit(0);
     }
-    return flag;
+    return buf;
 }
 

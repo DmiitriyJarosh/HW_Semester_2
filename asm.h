@@ -26,14 +26,18 @@ struct code
     char** memory;
     int point;
     int IP;
-    int* points;
+    int* tagsToLines;
+    char** tags;
+    int tagsPointer;
 }code;
 
-#include <stdio.h>
-//#include "functions.c"
-//#include "asm.c"
-//#include "special_functions.c"
 
+
+#include <stdio.h>
+FILE* input;
+#include "functions.c"
+#include "special_functions.c"
+#include "analyzer.c"
 
 void init();
 void ld(int adr);
@@ -42,12 +46,14 @@ void ldc(int num);
 void add();
 void sub();
 void cmp();
-void br(int point);
-void jmp(int point);
+void br(char* tag);
+void jmp(char* tag);
 int checkZero();
 void getCode();
 int charToInt(char* string, int pos);
 int checkPoint(char* string);
+char* readTag(char* string, int pos);
+int takeTag(char* string);
 int analyzeAndDoCode(int IP);
 void print();
 

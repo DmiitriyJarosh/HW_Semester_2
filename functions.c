@@ -3,13 +3,16 @@
 
 void init()
 {
+    int i;
     stack.memory = (int*)malloc(sizeof(int) * SIZE_OF_STACK);
     stack.esp = SIZE_OF_STACK - 1;
     heap.memory = (int*)malloc(sizeof(int) * SIZE_OF_HEAP);
     code.memory = (char**)calloc(sizeof(char*), SIZE_OF_CODE);
     code.point = 0;
     code.IP = 0;
-    code.points = (int*)calloc(sizeof(int), SIZE_OF_CODE);
+    code.tagsToLines = (int*)calloc(sizeof(int), SIZE_OF_CODE);
+    code.tags = (char**)calloc(sizeof(char*), SIZE_OF_CODE);
+    code.tagsPointer = 0;
 }
 
 void deinit()
@@ -17,22 +20,47 @@ void deinit()
     int i;
     free(stack.memory);
     free(heap.memory);
-    free(code.points);
+    free(code.tagsToLines);
     for (i = 0; i < code.point; i++)
     {
         free(code.memory[i]);
     }
     free(code.memory);
+    for (i = 0; i < code.tagsPointer; i++)
+    {
+        free(code.tags[i]);
+    }
+    free(code.tags);
 }
 
 void ld(int adr)
 {
+    if (stack.esp == -1)
+    {
+        printf("Stack error\n");
+        exit(0);
+    }
+    if ((adr < 0) || (adr > SIZE_OF_HEAP - 1))
+    {
+        printf("Memory address error\n");
+        exit(0);
+    }
     stack.memory[stack.esp] = heap.memory[adr];
     stack.esp--;
 }
 
 void st(int adr)
 {
+    if (stack.esp == SIZE_OF_STACK - 1)
+    {
+        printf("Stack error\n");
+        exit(0);
+    }
+    if ((adr < 0) || (adr > SIZE_OF_HEAP - 1))
+    {
+        printf("Memory address error\n");
+        exit(0);
+    }
     heap.memory[adr] = stack.memory[stack.esp + 1];
     stack.esp++;
 }
@@ -44,24 +72,44 @@ void print()
 
 void ldc(int num)
 {
+    if (stack.esp == -1)
+    {
+        printf("Stack error\n");
+        exit(0);
+    }
     stack.memory[stack.esp] = num;
     stack.esp--;
 }
 
 void add()
 {
+    if ((stack.esp >= SIZE_OF_STACK - 2) || (stack.esp == -1))
+    {
+        printf("Stack error\n");
+        exit(0);
+    }
     stack.memory[stack.esp] = stack.memory[stack.esp + 1] + stack.memory[stack.esp + 2];
     stack.esp--;
 }
 
 void sub()
 {
+    if ((stack.esp >= SIZE_OF_STACK - 2) || (stack.esp == -1))
+    {
+        printf("Stack error\n");
+        exit(0);
+    }
     stack.memory[stack.esp] = stack.memory[stack.esp + 1] - stack.memory[stack.esp + 2];
     stack.esp--;
 }
 
 void cmp()
 {
+    if ((stack.esp >= SIZE_OF_STACK - 2) || (stack.esp == -1))
+    {
+        printf("Stack error\n");
+        exit(0);
+    }
     if (stack.memory[stack.esp + 1] > stack.memory[stack.esp + 2])
     {
         stack.memory[stack.esp] = 1;
@@ -82,15 +130,41 @@ void cmp()
     }
 }
 
-void br(int point)
+void br(char* tag)
 {
     if (checkZero())
     {
-        code.IP = code.points[point];
+        jmp(tag);
     }
 }
 
-void jmp(int point)
+void jmp(char* tag)
 {
-    code.IP = code.points[point];
+    int i;
+    int flag = 0;
+    for (i = 0; i < code.tagsPointer; i++)
+        {
+            if (strcmp(tag, code.tags[i]) == 0)
+            {
+                code.IP = code.tagsToLines[i];
+                flag = 1;
+                break;
+            }
+        }
+    if (!flag)
+    {
+        while (1)
+        {
+            getCode();
+            if (checkPoint(code.memory[code.point - 1]))
+            {
+                takeTag(code.memory[code.point - 1]);
+                if (strcmp(tag, code.tags[code.tagsPointer - 1]) == 0)
+                {
+                    code.IP = code.tagsToLines[code.tagsPointer - 1];
+                    break;
+                }
+            }
+        }
+    }
 }
