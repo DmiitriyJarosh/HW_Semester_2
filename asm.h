@@ -4,8 +4,8 @@
 
 
 #define SIZE_OF_HEAP 0x80000
-#define SIZE_OF_STACK 100
-#define SIZE_OF_CODE 256
+#define SIZE_OF_STACK 1000
+#define SIZE_OF_CODE 1000
 #define LENGTH_OF_STRING 256
 
 
@@ -35,7 +35,7 @@ struct code
 
 #include <stdio.h>
 FILE* input;
-#include "functions.c"
+#include "commands.c"
 #include "special_functions.c"
 #include "analyzer.c"
 

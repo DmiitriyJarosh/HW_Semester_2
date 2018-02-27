@@ -86,8 +86,15 @@ int checkPoint(char* string)
     }
     else
     {
-        printf("Wrong mark!");
-        exit(0);
+        if (string[0] != ';')
+        {
+            printf("Wrong mark!");
+            exit(0);
+        }
+        else
+        {
+            return 0;
+        }
     }
 }
 
