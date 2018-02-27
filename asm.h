@@ -35,9 +35,7 @@ struct code
 
 #include <stdio.h>
 FILE* input;
-#include "commands.c"
-#include "special_functions.c"
-#include "analyzer.c"
+
 
 void init();
 void ld(int adr);
