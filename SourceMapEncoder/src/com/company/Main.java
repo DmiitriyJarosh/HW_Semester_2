@@ -42,7 +42,9 @@ public class Main {
             System.out.println(ex.getMessage());
         }
         Decoder decoder = new Decoder(code);
-        System.out.println("For file: " + file);
+        Printer.open("..\\SourceMapEncoder\\src\\com\\company\\decoded.txt");
+        Printer.println("For file: " + file);
         Decoder.PrintSourceMap(decoder.Decode(), words, files);
+        Printer.close();
     }
 }
