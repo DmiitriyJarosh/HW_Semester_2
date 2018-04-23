@@ -4,8 +4,7 @@ import static java.lang.Math.abs;
 
 public class RealPlayer extends Player implements IPlayer {
     RealPlayer() {
-        enemyField = new byte[SIZE_OF_FIELD][SIZE_OF_FIELD];
-        yourField = new byte[SIZE_OF_FIELD][SIZE_OF_FIELD];
+        gameField = new PlayerGameField();
     }
     public boolean[][] GetShips() {
         boolean[][] field = new boolean[SIZE_OF_FIELD][SIZE_OF_FIELD];
@@ -42,9 +41,9 @@ public class RealPlayer extends Player implements IPlayer {
                                 }
                             }
                             if (!mistakeFlag) {
+                                gameField.SetShip(nosePosition[0], nosePosition[0], nosePosition[1], tailPosition[1]);
                                 for (byte i = nosePosition[1]; i <= tailPosition[1]; i++) {
                                     field[nosePosition[0]][i] = true;
-                                    yourField[nosePosition[0]][i] = 3;
                                 }
                             }
                         } else {
@@ -62,9 +61,9 @@ public class RealPlayer extends Player implements IPlayer {
                                 }
                             }
                             if (!mistakeFlag) {
+                                gameField.SetShip(nosePosition[0], tailPosition[0], nosePosition[1], nosePosition[1]);
                                 for (byte i = nosePosition[0]; i <= tailPosition[0]; i++) {
                                     field[i][nosePosition[1]] = true;
-                                    yourField[i][nosePosition[1]] = 3;
                                 }
                             }
                         }
@@ -83,7 +82,7 @@ public class RealPlayer extends Player implements IPlayer {
         while (!flag) {
             GameClient.print("Enter coordinates for shoot");
             position = GameClient.readPosition();
-            if (enemyField[position[0]][position[1]] != 0) {
+            if (gameField.getPoint(position[0], position[1]) != 0) {
                 GameClient.print("You have shot there earlier. Choose another coordinates");
             } else {
                 flag = true;

@@ -1,9 +1,18 @@
 package com.company;
 
+import static com.company.Player.MAX_SHIP_SIZE;
+
 public class GameServer {
     public void Game(IPlayer firstPlayer, IPlayer secondPlayer, int typeOfOutput) {
         boolean[][] firstPlayerField, secondPlayerField;
-        int firstPlayerLiveCount = 20, secondPlayerLiveCount = 20;
+        int sizeOfShip = 1, amountOfShips = MAX_SHIP_SIZE;
+        int firstPlayerLiveCount = 0, secondPlayerLiveCount = 0;
+        for (int i = 0 ; i < MAX_SHIP_SIZE; i++) {
+            firstPlayerLiveCount += sizeOfShip * amountOfShips;
+            sizeOfShip++;
+            amountOfShips--;
+        }
+        secondPlayerLiveCount = firstPlayerLiveCount;
         byte[] position;
         int turn = 1;
         boolean winFlag = false;

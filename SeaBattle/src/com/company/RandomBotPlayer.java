@@ -4,8 +4,7 @@ import static java.lang.Math.random;
 
 public class RandomBotPlayer extends Player implements IPlayer {
     RandomBotPlayer() {
-        enemyField = new byte[SIZE_OF_FIELD][SIZE_OF_FIELD];
-        yourField = new byte[SIZE_OF_FIELD][SIZE_OF_FIELD];
+        gameField = new PlayerGameField();
     }
 
     public boolean[][] GetShips() {
@@ -48,9 +47,9 @@ public class RandomBotPlayer extends Player implements IPlayer {
                             }
                         }
                         if (!mistakeFlag) {
+                            gameField.SetShip(nosePosition[0], nosePosition[0], nosePosition[1], tailPosition[1]);
                             for (byte i = nosePosition[1]; i <= tailPosition[1]; i++) {
                                 field[nosePosition[0]][i] = true;
-                                yourField[nosePosition[0]][i] = 3;
                             }
                         }
                     } else {
@@ -73,9 +72,9 @@ public class RandomBotPlayer extends Player implements IPlayer {
                             }
                         }
                         if (!mistakeFlag) {
+                            gameField.SetShip(nosePosition[0], tailPosition[0], nosePosition[1], nosePosition[1]);
                             for (byte i = nosePosition[0]; i <= tailPosition[0]; i++) {
                                 field[i][nosePosition[1]] = true;
-                                yourField[i][nosePosition[1]] = 3;
                             }
                         }
                     }
@@ -91,7 +90,7 @@ public class RandomBotPlayer extends Player implements IPlayer {
         while (!flag) {
             position[0] = (byte)(random() * SIZE_OF_FIELD);
             position[1] = (byte)(random() * SIZE_OF_FIELD);
-            if (enemyField[position[0]][position[1]] == 0) {
+            if (gameField.getPoint(position[0], position[1]) == 0) {
                 flag = true;
             }
         }

@@ -3,8 +3,7 @@ package com.company;
 public abstract class Player {
     static final int SIZE_OF_FIELD = 10;
     static  final int MAX_SHIP_SIZE = 4;
-    byte[][] enemyField;
-    byte[][] yourField;
+    PlayerGameField gameField;
     protected boolean checkPoint(byte x, byte y, boolean[][] field) {
         boolean flag = true;
         if (field[x][y]) {
@@ -38,23 +37,19 @@ public abstract class Player {
     }
 
     public void ShootResult(byte i, byte[] position) {
-        enemyField[position[0]][position[1]] = i;
+        gameField.setPoint(position[0], position[1], i);
     }
 
     public void Attacked(byte[] position) {
-        if (yourField[position[0]][position[1]] == 0) {
-            yourField[position[0]][position[1]] = 1;
-        } else {
-            yourField[position[0]][position[1]] = 2;
-        }
+        gameField.Attacked(position[0], position[1]);
     }
 
     public void drawSituation() {
-        GameClient.drawField(yourField);
-        GameClient.drawField(enemyField);
+        GameClient.drawField(gameField.getYourField());
+        GameClient.drawField(gameField.getEnemyField());
     }
 
-    public boolean checkRange(int i) {
+    protected boolean checkRange(int i) {
         return (i >= 0 && i < SIZE_OF_FIELD);
     }
 }
