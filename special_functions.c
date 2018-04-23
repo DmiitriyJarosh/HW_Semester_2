@@ -17,6 +17,11 @@ void getCode()
 {
     char* buf;
     buf = calloc(sizeof(char), LENGTH_OF_STRING);
+    if (buf == NULL)
+    {
+        printf("Not enough memory for buffer");
+        exit(0);
+    }
     if (fgets(buf, LENGTH_OF_STRING, input) == NULL)
     {
         printf("Unexpected end of the program!!!");
@@ -55,6 +60,7 @@ int charToInt(char* string, int pos)
             printf("Too much arguments");
             exit(0);
         }
+        pos++;
     }
     if (positive)
     {
@@ -102,6 +108,11 @@ int takeTag(char* string)
 {
     int j, i = 0;
     char* buf = calloc(sizeof(char), LENGTH_OF_STRING);
+    if (buf == NULL)
+    {
+        printf("Not enough memory for buffer");
+        exit(0);
+    }
     while (string[i] != ':' && string[i] != ' ')
     {
         buf[i] = string[i];
@@ -130,6 +141,11 @@ char* readTag(char* string, int pos)
 {
     int i = 0;
     char* buf = calloc(sizeof(char), LENGTH_OF_STRING);
+    if (buf == NULL)
+    {
+        printf("Not enough memory for buffer");
+        exit(0);
+    }
     while((string[pos] != '\0') && (string[pos] != ' ') && (string[pos] != '\n'))
     {
         buf[i] = string[pos];

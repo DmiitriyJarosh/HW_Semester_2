@@ -1,6 +1,29 @@
 #pragma once
 #include "asm.h"
 
+int isCmd(int IP, int i, char* command)
+{
+    int j, flag = 1;
+    int length = strlen(command);
+    for (j = 0; j < length; j++)
+    {
+        if (command[j] != code.memory[IP][i])
+        {
+            flag = 0;
+            break;
+        }
+        i++;
+    }
+    if (flag)
+    {
+        if (code.memory[IP][i] != ' ' && code.memory[IP][i] != '\n' && code.memory[IP][i] != '\0')
+        {
+            flag = 0;
+        }
+    }
+    return flag;
+}
+
 int analyzeAndDoCode(int IP)
 {
     int i, flag = 1, wrongCommand = 0;
@@ -15,7 +38,7 @@ int analyzeAndDoCode(int IP)
     switch (code.memory[IP][i])
     {
         case 'r':
-            if ((code.memory[IP][i + 1] == 'e') && (code.memory[IP][i + 2] == 't') && ((code.memory[IP][i + 3] == ' ') || (code.memory[IP][i + 3] == '\n') || (code.memory[IP][i + 3] == '\0')))
+            if (isCmd(IP, i, "ret"))
             {
                 flag = 0;
             }
@@ -25,13 +48,13 @@ int analyzeAndDoCode(int IP)
             }
         break;
         case 'l':
-            if ((code.memory[IP][i + 1] == 'd') && (code.memory[IP][i + 2] == 'c') && ((code.memory[IP][i + 3] == ' ') || (code.memory[IP][i + 3] == '\n') || (code.memory[IP][i + 3] == '\0')))
+            if (isCmd(IP, i, "ldc"))
             {
                 ldc(charToInt(code.memory[IP], i + 4));
             }
             else
             {
-                if ((code.memory[IP][i + 1] == 'd') && ((code.memory[IP][i + 2] == ' ') || (code.memory[IP][i + 2] == '\n') || (code.memory[IP][i + 2] == '\0')))
+                if (isCmd(IP, i, "ld"))
                 {
                     ld(charToInt(code.memory[IP], i + 3));
                 }
@@ -42,13 +65,13 @@ int analyzeAndDoCode(int IP)
             }
         break;
         case 's':
-            if ((code.memory[IP][i + 1] == 't') && ((code.memory[IP][i + 2] == ' ') || (code.memory[IP][i + 2] == '\n') || (code.memory[IP][i + 2] == '\0')))
+            if (isCmd(IP, i, "st"))
             {
                 st(charToInt(code.memory[IP], i + 3));
             }
             else
             {
-                if ((code.memory[IP][i + 1] == 'u') && (code.memory[IP][i + 2] == 'b') && ((code.memory[IP][i + 3] == ' ') || (code.memory[IP][i + 3] == '\n') || (code.memory[IP][i + 3] == '\0')))
+                if (isCmd(IP, i, "sub"))
                 {
                     sub();
                 }
@@ -59,7 +82,7 @@ int analyzeAndDoCode(int IP)
             }
         break;
         case 'a':
-            if ((code.memory[IP][i + 1] == 'd') && (code.memory[IP][i + 2] == 'd') && ((code.memory[IP][i + 3] == ' ') || (code.memory[IP][i + 3] == '\n') || (code.memory[IP][i + 3] == '\0')))
+            if (isCmd(IP, i, "add"))
             {
                 add();
             }
@@ -69,7 +92,7 @@ int analyzeAndDoCode(int IP)
             }
         break;
         case 'p':
-            if ((code.memory[IP][i + 1] == 'r') && (code.memory[IP][i + 2] == 'i') && (code.memory[IP][i + 3] == 'n') && (code.memory[IP][i + 4] == 't') && ((code.memory[IP][i + 5] == ' ') || (code.memory[IP][i + 5] == '\n') || (code.memory[IP][i + 5] == '\0')))
+            if (isCmd(IP, i, "print"))
             {
                 print();
             }
@@ -79,7 +102,7 @@ int analyzeAndDoCode(int IP)
             }
         break;
         case 'c':
-            if ((code.memory[IP][i + 1] == 'm') && (code.memory[IP][i + 2] == 'p') && ((code.memory[IP][i + 3] == ' ') || (code.memory[IP][i + 3] == '\n') || (code.memory[IP][i + 3] == '\0')))
+            if (isCmd(IP, i, "cmp"))
             {
                 cmp();
             }
@@ -89,7 +112,7 @@ int analyzeAndDoCode(int IP)
             }
         break;
         case 'j':
-            if ((code.memory[IP][i + 1] == 'm') && (code.memory[IP][i + 2] == 'p') && ((code.memory[IP][i + 3] == ' ') || (code.memory[IP][i + 3] == '\n') || (code.memory[IP][i + 3] == '\0')))
+            if (isCmd(IP, i, "jmp"))
             {
                 jmp(readTag(code.memory[IP], i + 4));
             }
@@ -99,7 +122,7 @@ int analyzeAndDoCode(int IP)
             }
         break;
         case 'b':
-            if ((code.memory[IP][i + 1] == 'r') && ((code.memory[IP][i + 2] == ' ') || (code.memory[IP][i + 2] == '\n') || (code.memory[IP][i + 2] == '\0')))
+            if (isCmd(IP, i, "br"))
             {
                 br(readTag(code.memory[IP], i + 3));
             }
@@ -110,7 +133,7 @@ int analyzeAndDoCode(int IP)
         break;
         case ';':
         break;
-        default :
+        default:
             {
                 printf("Unknown command");
                 exit(0);

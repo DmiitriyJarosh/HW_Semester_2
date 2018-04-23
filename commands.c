@@ -5,13 +5,38 @@ void init()
 {
     int i;
     stack.memory = (int*)malloc(sizeof(int) * SIZE_OF_STACK);
+    if (stack.memory == NULL)
+    {
+        printf("Not enough memory for stack");
+        exit(0);
+    }
     stack.esp = SIZE_OF_STACK - 1;
     heap.memory = (int*)malloc(sizeof(int) * SIZE_OF_HEAP);
+    if (heap.memory == NULL)
+    {
+        printf("Not enough memory for heap");
+        exit(0);
+    }
     code.memory = (char**)calloc(sizeof(char*), SIZE_OF_CODE);
+    if (code.memory == NULL)
+    {
+        printf("Not enough memory for code");
+        exit(0);
+    }
     code.point = 0;
     code.IP = 0;
     code.tagsToLines = (int*)calloc(sizeof(int), SIZE_OF_CODE);
+    if (code.tagsToLines == NULL)
+    {
+        printf("Not enough memory for code");
+        exit(0);
+    }
     code.tags = (char**)calloc(sizeof(char*), SIZE_OF_CODE);
+    if (code.tags == NULL)
+    {
+        printf("Not enough memory for code");
+        exit(0);
+    }
     code.tagsPointer = 0;
 }
 
