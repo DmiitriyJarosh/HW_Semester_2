@@ -3,7 +3,13 @@ package com.company;
 import static com.company.Player.MAX_SHIP_SIZE;
 
 public class GameServer {
-    public void Game(IPlayer firstPlayer, IPlayer secondPlayer, int typeOfOutput) {
+    private IPlayer firstPlayer;
+    private IPlayer secondPlayer;
+    public GameServer(IPlayer firstPlayer) {
+        this.firstPlayer = firstPlayer;
+        this.secondPlayer = new CleverBotPlayer(); // always plays with clever one
+    }
+    public void Game(int typeOfOutput) {
         boolean[][] firstPlayerField, secondPlayerField;
         int sizeOfShip = 1, amountOfShips = MAX_SHIP_SIZE;
         int firstPlayerLiveCount = 0, secondPlayerLiveCount = 0;

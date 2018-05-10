@@ -3,10 +3,9 @@ package com.company;
 import static java.lang.Math.random;
 
 public class CleverBotPlayer extends Player implements IPlayer {
-    CleverBotPlayer() {
+    public CleverBotPlayer() {
         gameField = new PlayerGameField();
     }
-
     public boolean[][] GetShips() {
         boolean[][] field = new boolean[SIZE_OF_FIELD][SIZE_OF_FIELD];
         for (int i = 0; i < SIZE_OF_FIELD; i++) {

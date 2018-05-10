@@ -3,7 +3,7 @@ package com.company;
 import static java.lang.Math.abs;
 
 public class RealPlayer extends Player implements IPlayer {
-    RealPlayer() {
+    public RealPlayer() {
         gameField = new PlayerGameField();
     }
     public boolean[][] GetShips() {
